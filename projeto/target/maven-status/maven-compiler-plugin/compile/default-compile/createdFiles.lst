@@ -1,0 +1,9 @@
+com\example\demo\DemoApplication.class
+com\example\demo\config\DataInitializer.class
+com\example\demo\entity\Produto.class
+com\example\demo\repository\ProdutoRepository.class
+com\example\demo\dto\EstoqueRequest.class
+com\example\demo\dto\VendaRequest.class
+com\example\demo\controller\ProdutoController.class
+com\example\demo\exception\GlobalExceptionHandler.class
+com\example\demo\service\EstoqueService.class

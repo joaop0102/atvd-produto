@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.VendaRequest;
+import com.example.demo.dto.EstoqueRequest;
 import com.example.demo.entity.Produto;
 import com.example.demo.service.EstoqueService;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,15 @@ public class ProdutoController {
             @RequestBody VendaRequest request) {
 
         Produto produto = estoqueService.realizarVenda(id, request.qtd());
+        return ResponseEntity.ok(produto);
+    }
+
+    @PutMapping("/{id}/estoque")
+    public ResponseEntity<Produto> atualizarEstoque(
+            @PathVariable Long id,
+            @RequestBody EstoqueRequest request) {
+
+        Produto produto = estoqueService.atualizarEstoque(id, request.qtd());
         return ResponseEntity.ok(produto);
     }
 

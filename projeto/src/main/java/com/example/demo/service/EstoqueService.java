@@ -23,13 +23,31 @@ public class EstoqueService {
         Produto produto = produtoRepository.findById(produtoId)
                 .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado."));
 
-        if (produto.getQtd() < quantidade) {
+        int alterados = produtoRepository.baixarEstoque(produtoId, quantidade);
+
+        if (alterados == 0) {
+            // Reconsulta o estoque para informar o valor atual ao cliente.
+            Produto atual = produtoRepository.findById(produtoId)
+                    .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado."));
             throw new IllegalStateException(
-                    "Estoque insuficiente. Estoque atual: " + produto.getQtd()
+                    "Estoque insuficiente. Estoque atual: " + atual.getQtd()
             );
         }
 
-        produto.setQtd(produto.getQtd() - quantidade);
+        return produtoRepository.findById(produtoId)
+                .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado."));
+    }
+
+    @Transactional
+    public Produto atualizarEstoque(Long produtoId, Integer quantidade) {
+        if (quantidade == null || quantidade < 0) {
+            throw new IllegalArgumentException("A quantidade em estoque não pode ser negativa.");
+        }
+
+        Produto produto = produtoRepository.findById(produtoId)
+                .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado."));
+
+        produto.setQtd(quantidade);
         return produtoRepository.save(produto);
     }
 

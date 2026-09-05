@@ -12,11 +12,14 @@ public class DataInitializer {
     @Bean
     CommandLineRunner carregarProdutos(ProdutoRepository repository) {
         return args -> {
-            if (repository.count() == 0) {
-                repository.save(new Produto("Notebook", 10));
-                repository.save(new Produto("Mouse", 25));
-                repository.save(new Produto("Teclado", 15));
-            }
+            criarSeNaoExistir(repository, "Notebook", 10);
+            criarSeNaoExistir(repository, "Mouse", 25);
+            criarSeNaoExistir(repository, "Teclado", 15);
         };
+    }
+
+    private void criarSeNaoExistir(ProdutoRepository repository, String nome, int qtd) {
+        repository.findByNome(nome)
+                .orElseGet(() -> repository.save(new Produto(nome, qtd)));
     }
 }
