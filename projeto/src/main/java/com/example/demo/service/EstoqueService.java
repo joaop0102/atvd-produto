@@ -14,38 +14,37 @@ public class EstoqueService {
         this.produtoRepository = produtoRepository;
     }
 
+    /**
+     * Realiza a venda usando PESSIMISTIC_WRITE no carregamento do produto.
+     * A transacao mantem o lock durante a verificacao, alteracao e commit.
+     */
     @Transactional
     public Produto realizarVenda(Long produtoId, Integer quantidade) {
         if (quantidade == null || quantidade <= 0) {
             throw new IllegalArgumentException("A quantidade da venda deve ser maior que zero.");
         }
 
-        Produto produto = produtoRepository.findById(produtoId)
-                .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado."));
+        Produto produto = produtoRepository.findByIdWithLock(produtoId)
+                .orElseThrow(() -> new IllegalArgumentException("Produto nao encontrado."));
 
-        int alterados = produtoRepository.baixarEstoque(produtoId, quantidade);
-
-        if (alterados == 0) {
-            // Reconsulta o estoque para informar o valor atual ao cliente.
-            Produto atual = produtoRepository.findById(produtoId)
-                    .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado."));
+        if (produto.getQtd() < quantidade) {
             throw new IllegalStateException(
-                    "Estoque insuficiente. Estoque atual: " + atual.getQtd()
+                    "Estoque insuficiente. Estoque atual: " + produto.getQtd()
             );
         }
 
-        return produtoRepository.findById(produtoId)
-                .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado."));
+        produto.setQtd(produto.getQtd() - quantidade);
+        return produtoRepository.save(produto);
     }
 
     @Transactional
     public Produto atualizarEstoque(Long produtoId, Integer quantidade) {
         if (quantidade == null || quantidade < 0) {
-            throw new IllegalArgumentException("A quantidade em estoque não pode ser negativa.");
+            throw new IllegalArgumentException("A quantidade em estoque nao pode ser negativa.");
         }
 
         Produto produto = produtoRepository.findById(produtoId)
-                .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado."));
+                .orElseThrow(() -> new IllegalArgumentException("Produto nao encontrado."));
 
         produto.setQtd(quantidade);
         return produtoRepository.save(produto);
@@ -54,6 +53,6 @@ public class EstoqueService {
     @Transactional(readOnly = true)
     public Produto consultarEstoque(Long produtoId) {
         return produtoRepository.findById(produtoId)
-                .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado."));
+                .orElseThrow(() -> new IllegalArgumentException("Produto nao encontrado."));
     }
 }
