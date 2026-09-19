@@ -1,0 +1,107 @@
+# =========================
+# Java / Maven
+# =========================
+
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Maven
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+
+# =========================
+# IDEs
+# =========================
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# Eclipse
+.classpath
+.project
+.settings/
+.factorypath
+
+
+# =========================
+# Spring Boot
+# =========================
+
+.springBeans
+.sts4-cache
+
+
+# =========================
+# Logs
+# =========================
+
+*.log
+logs/
+
+
+# =========================
+# H2 Database
+# =========================
+
+# Banco H2 local
+data/
+
+# Arquivos H2 caso estejam em outras pastas
+*.db
+*.mv.db
+*.trace.db
+
+
+# =========================
+# Sistema operacional
+# =========================
+
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+
+
+# =========================
+# Ambiente / configurações
+# =========================
+
+.env
+.env.*
+!.env.example
+
+# Arquivos temporários
+*.tmp
+*.temp
+*.swp
+*.swo
+
+
+# =========================
+# Spring / configuração local
+# =========================
+
+application-local.yml
+application-local.yaml
+application-local.properties
+
+# Caso tenha configurações com credenciais locais
+application-secret.yml
+application-secret.yaml
+application-secret.properties
