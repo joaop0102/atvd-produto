@@ -39,4 +39,18 @@ public class ProdutoController {
     public ResponseEntity<Produto> consultarEstoque(@PathVariable Long id) {
         return ResponseEntity.ok(estoqueService.consultarEstoque(id));
     }
+
+    @PostMapping
+    public ResponseEntity<Produto> criarProduto(@RequestBody Produto produto) {
+        Produto novoProduto = estoqueService.criarProduto(produto);
+        // Retorna 201 Created
+        return ResponseEntity.status(201).body(novoProduto);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarProduto(@PathVariable Long id) {
+        estoqueService.deletarProduto(id);
+        // Retorna 204 No Content (sucesso sem corpo de resposta)
+        return ResponseEntity.noContent().build();
+    }
 }

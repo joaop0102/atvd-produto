@@ -14,3 +14,8 @@ spring:
 
 server:
   port: 0
+
+
+app:
+  messaging:
+    enabled: false

@@ -21,9 +21,25 @@ spring:
       enabled: true
       path: /h2-console
 
+  rabbitmq:
+    # Configuração do RabbitMQ usada pelo Spring AMQP.
+    # Pode ser sobrescrita por variáveis de ambiente.
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+
 server:
   # Pode ser sobrescrita por variável de ambiente ou argumento da JVM.
   # Exemplos:
   # PORT=8081 java -jar target/estoque-api.jar
   # java -jar target/estoque-api.jar --server.port=8082
   port: ${PORT:8080}
+
+
+app:
+  messaging:
+    enabled: ${APP_MESSAGING_ENABLED:true}
+    exchange: ${APP_MESSAGING_EXCHANGE:produto.exchange}
+    queue: ${APP_MESSAGING_QUEUE:produto.eventos}
+    routing-key: ${APP_MESSAGING_ROUTING_KEY:produto.evento}

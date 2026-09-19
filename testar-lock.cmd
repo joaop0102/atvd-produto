@@ -1,14 +1,7 @@
 @echo off
 setlocal
-
 set "BASE=http://localhost:8080"
 set "ID=1"
-
-if not exist "%~dp0venda-lock.cmd" (
-    echo ERRO: arquivo venda-lock.cmd nao encontrado.
-    pause
-    exit /b 1
-)
 
 echo ============================================
 echo TESTE DO PESSIMISTIC_WRITE - VENDA CONCORRENTE
@@ -16,6 +9,21 @@ echo ============================================
 echo.
 echo Produto usado: ID %ID%
 echo.
+
+if not exist "%~dp0venda-lock.cmd" (
+    echo ERRO: arquivo venda-lock.cmd nao encontrado.
+    pause
+    exit /b 1
+)
+
+for /f "delims=" %%A in ('curl -s -o nul -w "%%{http_code}" "%BASE%/produtos/%ID%/estoque"') do set "STATUS=%%A"
+if not "%STATUS%"=="200" (
+    echo ERRO: API nao esta respondendo.
+    echo Inicie o projeto com iniciar-projeto.cmd
+    echo.
+    pause
+    exit /b 1
+)
 
 echo [1] Colocando o estoque do produto em 1...
 curl -s -X PUT "%BASE%/produtos/%ID%/estoque" -H "Content-Type: application/json" -d "{\"qtd\":1}"
@@ -60,7 +68,7 @@ echo - Uma venda retorna HTTP 200.
 echo - A outra retorna HTTP 409 por estoque insuficiente.
 echo - O estoque final fica em 0.
 echo.
-echo Observacao: deixe o console do Spring Boot aberto para visualizar a SQL gerada pela venda.
+echo Deixe o console do Spring Boot aberto para visualizar a SQL e os eventos.
 echo.
 pause
 endlocal
