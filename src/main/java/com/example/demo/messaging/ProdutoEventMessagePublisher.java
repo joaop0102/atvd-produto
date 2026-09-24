@@ -32,11 +32,7 @@ public class ProdutoEventMessagePublisher {
         this.routingKey = routingKey;
     }
 
-    /**
-     * So envia para o RabbitMQ depois que a transacao do CRUD foi confirmada.
-     * O RabbitTemplate usa o JacksonJsonMessageConverter configurado no projeto
-     * para transformar o evento em JSON.
-     */
+
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void publicar(ProdutoAlteradoEvent event) {
         if (!enabled) {
@@ -49,8 +45,6 @@ public class ProdutoEventMessagePublisher {
             log.info("Evento de produto publicado no RabbitMQ: operacao={}, produtoId={}, qtd={}",
                     event.operacao(), event.produtoId(), event.quantidade());
         } catch (RuntimeException ex) {
-            // A venda/atualizacao ja foi confirmada no banco. O erro de mensageria
-            // nao deve desfazer a operacao, mas fica registrado no log.
             log.error("Falha ao publicar evento do produto {} no RabbitMQ.", event.produtoId(), ex);
         }
     }
